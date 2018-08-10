@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace CityInfoAPI.Models
 {
-    public class PointOfInteresForCreation
+    public class PointOfInteresForCreationUpdate
     {
-        [MaxLength(10,ErrorMessage ="Ragno maximo de 10 caracteres")]
+        [MaxLength(50,ErrorMessage ="Ragno maximo de 10 caracteres")]
         public string Name { get; set; }
+
         [Required(ErrorMessage ="El campo descripcion es requerido, Ingresa informacion")]
         public string Description { get; set; }
     }

@@ -20,9 +20,14 @@ namespace CityInfoAPI
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .Build();
+                .ConfigureLogging(loggin => 
+                 {
+                     loggin.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+                 }).Build();
     }
 
     //Staging-production-development
     //Inicia en Program-ConfigureServices-Configure
+    //.ConfigureLogging Srve para registrar el logger agregando un provedor(provider)
+    //Propiedades sobre el nlog.config y darle Copiar si es posterior para que lo copie en la carpeta bin
 }
