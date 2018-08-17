@@ -17,8 +17,8 @@ namespace CityInfoAPI
             {
                 new CiudadDto{
                     Id =1,
-                    Nombre ="Iguala de la independecia",
-                    Descripcion ="Cuna de la bandera",
+                    Name ="Iguala de la independecia",
+                    Description ="Cuna de la bandera",
                     PointOfInterest = new List<PointOfInterestDto>()
                     {
                         new PointOfInterestDto{ID=1,Name="Asta Bandera Monumental",Description="La más alta de latinoamerica"},
@@ -27,8 +27,8 @@ namespace CityInfoAPI
                 },
                 new CiudadDto{
                     Id =2,
-                    Nombre ="Acapulco",
-                    Descripcion ="Lugar de la Quebrada",
+                    Name ="Acapulco",
+                    Description ="Lugar de la Quebrada",
                     PointOfInterest = new List<PointOfInterestDto>()
                     {
                         new PointOfInterestDto{ID=1,Name="La Quebrada",Description="es un acantilado de 45 metros de altura"},
@@ -38,8 +38,8 @@ namespace CityInfoAPI
                 },
                 new CiudadDto{
                     Id =3,
-                    Nombre ="Chilpancingo",
-                    Descripcion ="Capital del estado",
+                    Name ="Chilpancingo",
+                    Description ="Capital del estado",
                     PointOfInterest = new List<PointOfInterestDto>()
                     {
                         new PointOfInterestDto{ID=1,Name="Congreso",Description="Diputados Locales"}
@@ -47,8 +47,8 @@ namespace CityInfoAPI
                 },
                 new CiudadDto{
                     Id =4,
-                    Nombre ="Taxco de Alarcon",
-                    Descripcion ="Pueblo Magico",
+                    Name ="Taxco de Alarcon",
+                    Description ="Pueblo Magico",
                     PointOfInterest = new List<PointOfInterestDto>()
                     {
                         new PointOfInterestDto{ID=1,Name="El cristo",Description="Estructura religiosa"},
@@ -58,8 +58,8 @@ namespace CityInfoAPI
                 },
                 new CiudadDto{
                     Id =5,
-                    Nombre ="Itxtapa, Zihuatanejo",
-                    Descripcion ="Playita Magica",
+                    Name ="Itxtapa, Zihuatanejo",
+                    Description ="Playita Magica",
                     PointOfInterest = new List<PointOfInterestDto>()
                     {
                         new PointOfInterestDto{ID=1,Name="Playa de las gatas",Description="Playa Local"},

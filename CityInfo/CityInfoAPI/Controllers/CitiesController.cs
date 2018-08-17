@@ -1,4 +1,5 @@
 ﻿using CityInfoAPI.Models;
+using CityInfoAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,33 @@ using System.Threading.Tasks;
 
 namespace CityInfoAPI.Controllers
 {
-    [Produces("application/xml")]
+   
     [Route("api/cities")]
     public class CitiesController : Controller
     {
+        //Inyectar el repositorio 
+        ICityInfoRepository _cityInfoRepository; 
+        public CitiesController(ICityInfoRepository cityInfoRepository)
+        {
+            _cityInfoRepository = cityInfoRepository;
+        }
+
         [HttpGet()]
         public IActionResult Get()
         {
-            return Ok(CiudadDataStore.Current.Ciudades);
+            //return Ok(CiudadDataStore.Current.Ciudades);
+            var citiesEntities = _cityInfoRepository.GetCities();
+            var results = new List<CityWithoutPointOfInterestDto>();
+            foreach (var cityEntity in citiesEntities)
+            {
+                results.Add(new CityWithoutPointOfInterestDto
+                {
+                    Id = cityEntity.Id,
+                    Description = cityEntity.Description,
+                    Name = cityEntity.Name
+                });
+            }
+            return Ok(results);
         }
 
         [HttpGet("datos")]
