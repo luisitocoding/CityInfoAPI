@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CityInfoAPI.Entities;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,6 +42,7 @@ namespace CityInfoAPI
                     new XmlDataContractSerializerOutputFormatter()
                     ))
                 ;
+            
 
             //AddTransiet  - AddScope - AddSingleton 3 formas de inyectar servicios Duracion de service
 
@@ -49,16 +52,20 @@ namespace CityInfoAPI
             //Crear el servicio, agregar el servicio y usarlo en la clase que quieras en el constructor
 
             //Directivas para ver cuando usar cierto servicio
-
+            /*
 #if DEBUG
             services.AddTransient<IMailService, LocalMailService>();
 #else
              services.AddTransient<IMailService, CloudMailService>();
 #endif
+*/
+
+            var connectionString = Startup.configuration["connectionString:cityInfoDb"];
+            services.AddDbContext<CityInfoDbContext>(o => o.UseSqlServer(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CityInfoDbContext context)
         {
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
@@ -67,9 +74,10 @@ namespace CityInfoAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            context.EnsureSeedDatForContext();
             app.UseStatusCodePages();
             app.UseMvc();
-
+           
             //app.Run(async (context) =>
             //{
                 
