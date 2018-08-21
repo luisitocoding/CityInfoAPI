@@ -79,6 +79,16 @@ namespace CityInfoAPI
             }
             context.EnsureSeedDatForContext();
             app.UseStatusCodePages();
+
+            //Auto Mapper Configuracion
+            AutoMapper.Mapper.Initialize(cfg=> 
+            {
+                //Mapear Entidad ciudad a Dto Ciudad 
+                cfg.CreateMap<Entities.City, Models.CityWithoutPointOfInterestDto>();
+                cfg.CreateMap<Entities.City, Models.CiudadDto>();
+                cfg.CreateMap<Entities.PointOfInterest, Models.PointOfInterestDto>();
+            });
+
             app.UseMvc();
            
             //app.Run(async (context) =>

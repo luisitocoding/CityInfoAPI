@@ -17,6 +17,12 @@ namespace CityInfoAPI.Services
         {
             _context = context;
         }
+
+        public bool CityExist(int cityid)
+        {
+            return _context.Cities.Any(c => c.Id == cityid);
+        }
+
         //Aqui termina la inyeccion
 
         public IEnumerable<City> GetCities()

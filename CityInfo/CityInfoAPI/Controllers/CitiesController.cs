@@ -1,4 +1,5 @@
-﻿using CityInfoAPI.Models;
+﻿using AutoMapper;
+using CityInfoAPI.Models;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,27 +14,21 @@ namespace CityInfoAPI.Controllers
     public class CitiesController : Controller
     {
         //Inyectar el repositorio 
-        ICityInfoRepository _cityInfoRepository; 
+        private ICityInfoRepository _cityInfoRepository; 
         public CitiesController(ICityInfoRepository cityInfoRepository)
         {
             _cityInfoRepository = cityInfoRepository;
         }
 
+        //Automaper se descarga un Nuget de ahi en Startup Metodo Configure se hace una sola vez
+        //Esto es para que haga el mapeo 
         [HttpGet()]
-        public IActionResult Get()
+        public IActionResult GetCities()
         {
             //return Ok(CiudadDataStore.Current.Ciudades);
             var citiesEntities = _cityInfoRepository.GetCities();
-            var results = new List<CityWithoutPointOfInterestDto>();
-            foreach (var cityEntity in citiesEntities)
-            {
-                results.Add(new CityWithoutPointOfInterestDto
-                {
-                    Id = cityEntity.Id,
-                    Description = cityEntity.Description,
-                    Name = cityEntity.Name
-                });
-            }
+            var results = Mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(citiesEntities);
+
             return Ok(results);
         }
 
@@ -48,14 +43,22 @@ namespace CityInfoAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetCityById(int id, bool includePointOfInterest)
         {
-            var ciudad = CiudadDataStore.Current.Ciudades.FirstOrDefault(c => c.Id == id);
-            if (ciudad == null)
+            var city = _cityInfoRepository.GetCity(id, includePointOfInterest);
+            
+            if (city == null)
             {
                 return NotFound();                           
             }
-            return Ok(ciudad);
+
+            if (includePointOfInterest)
+            {
+                var cityResult = Mapper.Map<CiudadDto>(city);
+                return Ok(cityResult);
+            }
+            var cityWithoutPointOfInterest = Mapper.Map<CityWithoutPointOfInterestDto>(city);
+            return Ok(cityWithoutPointOfInterest);
         }
         //Crear una api,que regrese los datos personales de los alumnos, ID,NOMBRE, EMAIL,TELEFONO, FECHANACIMIENTO: buscar por nombre, por id y por mes 
     }

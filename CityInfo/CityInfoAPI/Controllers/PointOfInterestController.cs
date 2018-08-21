@@ -1,4 +1,5 @@
-﻿using CityInfoAPI.Models;
+﻿using AutoMapper;
+using CityInfoAPI.Models;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,37 +14,38 @@ namespace CityInfoAPI.Controllers
     [Route("api")]
     public class PointOfInterestController : Controller
     {
+        private ICityInfoRepository _cityInfoRepository;
         private ILogger<PointOfInterestController> _logger;
         //Inyectar el servicio y usarlo en el delete
         //private LocalMailService _mailService;
 
         //Sobre la interfaz una vez creado las interfaces 
-        private IMailService _mailService;
-        public PointOfInterestController(ILogger<PointOfInterestController> logger, IMailService mailService)
+       // private IMailService _mailService;
+        public PointOfInterestController(/*ILogger<PointOfInterestController> logger, IMailService mailService,*/ICityInfoRepository cityInfoRepository)
         {
-            _logger = logger;
-            _mailService = mailService;
+            //_logger = logger;
+            //_mailService = mailService;
+            _cityInfoRepository = cityInfoRepository;
         }
 
         [HttpGet("cities/{id}/pointofinterest")]
         public IActionResult GetPointOfInterest(int id)
         {
-            try
-            {
-                throw new Exception();
-                var city = CiudadDataStore.Current.Ciudades.FirstOrDefault(c => c.Id == id);
-                if (city == null)
+                if (!_cityInfoRepository.CityExist(id))
                 {
-                   
+                    _logger.LogInformation($"la ciudad con el id {id} no existe");
                     return NotFound();
                 }
-                return Ok(city.PointOfInterest);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Ciudad con el ID: {id} no se encontro mientras buscabamos POI", ex);
-                return StatusCode(500, "Un problema ocurrio con el servidor");
-            }
+
+                var pointOfInterestForCity = _cityInfoRepository.GetPointsOfInterestsForCity(id);
+                var pointOfInterestForCityResults = Mapper.Map<IEnumerable<PointOfInterestDto>>(pointOfInterestForCity);
+                return Ok(pointOfInterestForCityResults);
+            
+            //catch (Exception ex)
+            //{
+            //    _logger.LogCritical($"Ciudad con el ID: {id} no se encontro mientras buscabamos POI", ex);
+            //    return StatusCode(500, "Un problema ocurrio con el servidor");
+            //}
         }
 
         [HttpGet("point/{cityid}/pointofinterest/{id}", Name = "Creado")]
@@ -227,7 +229,7 @@ namespace CityInfoAPI.Controllers
 
             city.PointOfInterest.Remove(pointOfInterestFromStore);
             //Servicio
-            _mailService.Send($"Recurso Eliminado {pointOfInterestFromStore.Name}", $"El recurso con el id : {pointOfInterestFromStore.ID} ha sido eliminado");
+            //_mailService.Send($"Recurso Eliminado {pointOfInterestFromStore.Name}", $"El recurso con el id : {pointOfInterestFromStore.ID} ha sido eliminado");
             return NoContent();
         }
     }

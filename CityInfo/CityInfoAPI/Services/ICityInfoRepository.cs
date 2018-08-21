@@ -11,7 +11,7 @@ namespace CityInfoAPI.Services
         //Repositorio que implementara CityInfoRepository
         IEnumerable<City> GetCities();
         City GetCity(int cityid, bool includePointOfInterest);
-
+        bool CityExist(int cityid);
         IEnumerable<PointOfInterest> GetPointsOfInterestsForCity(int cityid);
         PointOfInterest GetPointOfInterestsForCity(int cityid, int pointofinterest);
     }
