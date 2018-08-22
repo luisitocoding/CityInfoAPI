@@ -48,6 +48,61 @@ namespace CityInfoAPI.Controllers
             //}
         }
 
+        //Metodos desde El Repository
+
+        //Crear Punto de Interes
+        [HttpPost("cities/{cityid}/pointofinterest")]
+        public IActionResult CreatePointOfInterst([FromBody] PointOfInteresForCreation pointOfInteres, int cityid)
+        {
+            if (pointOfInteres == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(!_cityInfoRepository.CityExist(cityid))
+            {
+                return NotFound();
+            }
+
+            var finalPointOfInterst = Mapper.Map<Entities.PointOfInterest>(pointOfInteres);
+
+            _cityInfoRepository.AddPointOfInterestForCity(cityid, finalPointOfInterst);
+
+            if (!_cityInfoRepository.Save())
+            {
+                return StatusCode(500, "Hola k ace, tiene un error o k");
+            }
+
+            var CreatedPointOfInterestToReturn = Mapper.Map<Models.PointOfInterestDto>(finalPointOfInterst);
+            return CreatedAtRoute("GetPointOfInterest", new { cityid = cityid, id = CreatedPointOfInterestToReturn.ID }, CreatedPointOfInterestToReturn);
+        }
+
+        //Obtener Punto de Interes por ID
+        [HttpGet("{cityid}/pointofinterest/{id}", Name = "GetPointOfInterest")]
+        public IActionResult GetPointOfInterestById(int cityid, int id)
+        {
+            if (!_cityInfoRepository.CityExist(cityid))
+            {
+                return NotFound();
+            }
+
+            var pointOfInterest = _cityInfoRepository.GetPointOfInterestsForCity(cityid, id);
+            if (pointOfInterest == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestResult = Mapper.Map<PointOfInterestDto>(pointOfInterest);
+            return Ok(pointOfInterestResult);
+        }
+        
+
+        /* Metodos Desde el CiudadDataStore
         [HttpGet("point/{cityid}/pointofinterest/{id}", Name = "Creado")]
         public IActionResult GetPointOfInterestById(int cityid, int id)
         {
@@ -207,7 +262,7 @@ namespace CityInfoAPI.Controllers
                 PUT: Actualizacion completa 
                 PATCH: Parcial  (op, path, value) 204 o 200 
                 DELETE: 204                
-             * */
+             * 
         }
 
         [HttpDelete("{cityid}/pointofinterest/{id}")]
@@ -231,6 +286,6 @@ namespace CityInfoAPI.Controllers
             //Servicio
             //_mailService.Send($"Recurso Eliminado {pointOfInterestFromStore.Name}", $"El recurso con el id : {pointOfInterestFromStore.ID} ha sido eliminado");
             return NoContent();
-        }
+        }*/
     }
 }
